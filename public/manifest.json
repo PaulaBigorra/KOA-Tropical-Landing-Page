@@ -1,1 +1,21 @@
-
+{
+  "short_name": "Koa Tropical",
+  "name": "Koa Tropical Resort & Spa",
+  "icons": [
+    {
+      "src": "pwa-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "pwa-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#efece6",
+  "theme_color": "#8c857b",
+  "display": "standalone",
+  "orientation": "portrait"
+}
