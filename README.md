@@ -2,7 +2,7 @@
 
 > A tropical boutique hotel landing page focused on natural elegance,
 > ocean serenity, and a memorable guest experience.
-
+AGREGAR COMO EJECUTAR LA PÁGINA DE3SDE GITHUB
 🚧 **Status: In Development**
 
 ---
