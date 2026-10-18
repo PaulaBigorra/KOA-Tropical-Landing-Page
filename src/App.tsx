@@ -8,6 +8,9 @@ import {
   X 
 } from 'lucide-react';
 import { Room, EventService, Review } from './types';
+import { BookingModal } from './components/bookingmodal';
+import { AddReviewModal } from './components/addreviewmodal';
+import { RoomType, Review as BookingReview } from './Types/booking';
 
 // Datos basados en las capturas de Figma
 const ROOMS: Room[] = [
@@ -140,6 +143,43 @@ export function App() {
     setPromoEmail('');
   };
 
+    // 1. Agregar los estados dentro del componente App existente
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+
+  const [roomStock, setRoomStock] = useState<Record<string, number>>({
+    'suite-presidencial': 5,
+    'deluxe-ocean': 5,
+    'tropical-garden': 5,
+    'standard-cozy': 5,
+  });
+
+  const [reviews, setReviews] = useState<Review[]>([
+    {
+      id: '1',
+      email: 'maria@gmail.com',
+      rating: 5,
+      comment: '¡Una experiencia increíble en KOA Tropical!',
+      date: '2026-10-15',
+    },
+  ]);
+
+  const handleBookingSuccess = (roomTypeId: string, count: number) => {
+    setRoomStock((prev) => ({
+      ...prev,
+      [roomTypeId]: Math.max(0, prev[roomTypeId] - count),
+    }));
+  };
+
+  const handleAddReview = (newReviewData: Omit<Review, 'id' | 'date'>) => {
+    const newReview: Review = {
+      ...newReviewData,
+      id: Date.now().toString(),
+      date: new Date().toISOString().split('T')[0],
+    };
+    setReviews([newReview, ...reviews]);
+  };
+
   return (
     <div className="min-h-screen bg-[#efece6] text-[#2c2a29] font-sans antialiased">
       
@@ -162,12 +202,12 @@ export function App() {
             <a href="#contact" className="hover:text-[#1a1a1a] transition">Contact Us</a>
           </nav>
 
-          <a 
-            href="#rooms" 
-            className="hidden md:inline-block bg-[#1a1a1a] text-white px-6 py-2.5 text-xs tracking-wider uppercase font-semibold hover:bg-[#333] transition"
+          <button
+          onClick={() => setIsBookingOpen(true)}
+            className="bg-[#000000] text-white px-6 py-2 font-fallback text-xs uppercase tracking-wider hover:bg-[#1a1a1a] transition rounded-sm"
           >
-            Reserve Your Stay
-          </a>
+            RESERVE YOUR STAY
+          </button> 
 
           {/* Menú Mobile */}
           <button 
@@ -299,7 +339,17 @@ export function App() {
             <h2 className="font-serif text-4xl text-[#1a1a1a]">Guest Reviews</h2>
             <div className="w-12 h-[1px] bg-[#8c857b] mx-auto mt-3"></div>
           </div>
-
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+          <h2 className="text-3xl font-serif text-[#2C3E35]">What Our Guests Say</h2>
+          
+          {/* Botón para abrir el emergente de reseña */}
+          <button
+            onClick={() => setIsReviewOpen(true)}
+            className="bg-[#8E8277] hover:bg-[#000000] text-white px-5 py-2.5 rounded-lg text-sm font-medium transition cursor-pointer shadow"
+          >
+            + Add Review
+          </button>
+    </div>
           <div className="space-y-6">
             {REVIEWS.map((rev) => (
               <div key={rev.id} className="bg-[#efece6] p-6 rounded-sm flex flex-col md:flex-row gap-6 items-center border border-[#d8d3c9]">
@@ -446,7 +496,21 @@ export function App() {
           </div>
         </div>
       </footer>
+      {/* Modales Emergentes */}
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        rooms={ROOMS}
+        roomStock={roomStock}
+        onBookingSuccess={handleBookingSuccess}
+      />
 
+      <AddReviewModal
+        isOpen={isReviewOpen}
+        onClose={() => setIsReviewOpen(false)}
+        onAddReview={handleAddReview}
+      />
     </div>
   );
 }
+
